@@ -1,28 +1,40 @@
 version: '3'
 
 services:
-  frontend:
-    build: ./front-end
-    container_name: front-end_ecommerce
-    working_dir: /srv/frontend
-    env_file: .env
+  # frontend:
+  #   build: ./front-end
+  #   container_name: front-end_ecommerce
+  #   working_dir: /srv/frontend
+  #   env_file: .env
+  #   ports:
+  #     - '${PORT_FRONT}:${PORT_FRONT}'
+  #   restart: always
+  #   networks:
+  #     - project-kleber
+
+  backend:
+    env_file:
+      - .env
+    build: ./back-end
+    container_name: backend_marketplace
     ports:
-      - '${PORT_FRONT}:${PORT_FRONT}'
+      - '${PORT_BACK}:${PORT_BACK}'
     restart: always
-    # volumes:
-    #   - ./front-end/package.json:/srv/front-end/package.json
-    #   - ./front-end/package-lock.json:/srv/front-end/package-lock.json
-    #   - ./front-end/src:/srv/front-end/src
-    #   - ./front-end/index.html:/srv/front-end/index.html
-    #   - ./front-end/public:/srv/front-end/public
-    #   - ./front-end/postcss.config.cjs:/srv/front-end/postcss.config.cjs
-    #   - ./front-end/tailwind.config.cjs:/srv/front-end/tailwind.config.cjs
-    #   - ./front-end/tsconfig.json:/srv/front-end/tsconfig.json
-    #   - ./front-end/tsconfig.node.json:/srv/front-end/tsconfig.node.json
-    #   - ./front-end/vite.config.ts:/srv/front-end/vite.config.ts
-    # command: bash -c 'npm install && npm run dev'
     networks:
       - project-kleber
+    depends_on:
+      - db
+
+  db:
+    env_file:
+      - .env
+    container_name: db_marketplace
+    image: mysql:5.7
+    ports:
+      - '${PORT_DB}:${PORT_DB}'
+    networks:
+      - project-kleber
+    restart: always
 
 networks:
   project-kleber:
